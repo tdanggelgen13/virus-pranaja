@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Perangkat - Pranaja Anti-Virus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Status Keamanan Perangkat</h1>
+        <div class="theme-toggle">
+            <button id="darkModeBtn" class="theme-btn">
+                <i class="fas fa-moon"></i> Mode Gelap
+            </button>
+            <button id="cyberpunkBtn" class="theme-btn">
+                <i class="fas fa-bolt"></i> Mode Cyberpunk
+            </button>
+            <button id="safeModeBtn" class="theme-btn">
+                <i class="fas fa-shield-alt"></i> Mode Aman
+            </button>
+        </div>
+    </header>
+
+    <main class="container" id="deviceStatusContainer">
+        <!-- Security Score Card -->
+        <div class="card">
+            <div class="card-title">Skor Keamanan</div>
+            <div class="score-circle">
+                <span id="securityScore" class="score-text">{{ status.security_score }}</span>
+            </div>
+            
+            {% if status.security_score >= 80 %}
+                <div class="status-indicator">
+                    <div class="status-circle status-good"></div>
+                    <span class="status-text">Keamanan perangkat Anda baik</span>
+                </div>
+            {% elif status.security_score >= 60 %}
+                <div class="status-indicator">
+                    <div class="status-circle status-warning"></div>
+                    <span class="status-text">Perangkat Anda memiliki beberapa masalah keamanan</span>
+                </div>
+            {% else %}
+                <div class="status-indicator">
+                    <div class="status-circle status-danger"></div>
+                    <span class="status-text">Perangkat Anda memiliki masalah keamanan serius</span>
+                </div>
+            {% endif %}
+            
+            <p class="text-center"><small>Terakhir diperbarui: {{ status.last_updated }}</small></p>
+        </div>
+
+        <!-- System Information Card -->
+        <div class="card">
+            <div class="card-title">Informasi Sistem</div>
+            <ul class="status-list">
+                {% for key, value in status.system_info.items() %}
+                    <li class="status-item">
+                        <div class="status-label">
+                            <strong>
+                            {% if key == 'os_version' %}
+                                Versi OS
+                            {% elif key == 'device_model' %}
+                                Model Perangkat
+                            {% elif key == 'manufacturer' %}
+                                Produsen
+                            {% elif key == 'screen_resolution' %}
+                                Resolusi Layar
+                            {% elif key == 'imei' %}
+                                IMEI
+                            {% elif key == 'android_id' %}
+                                ID Android
+                            {% elif key == 'build_number' %}
+                                Nomor Build
+                            {% else %}
+                                {{ key|replace('_', ' ')|title }}
+                            {% endif %}
+                            :</strong>
+                        </div>
+                        <div class="status-value">
+                            {{ value }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Security Settings Card -->
+        <div class="card">
+            <div class="card-title">Pengaturan Keamanan</div>
+            <ul class="status-list">
+                {% for key, value in status.security_settings.items() %}
+                    <li class="status-item">
+                        <div class="status-label">
+                            <strong>
+                            {% if key == 'screen_lock' %}
+                                Kunci Layar
+                            {% elif key == 'biometric' %}
+                                Biometrik
+                            {% elif key == 'verify_apps' %}
+                                Verifikasi Aplikasi
+                            {% elif key == 'unknown_sources' %}
+                                Sumber Tidak Dikenal
+                            {% elif key == 'developer_options' %}
+                                Opsi Pengembang
+                            {% elif key == 'usb_debugging' %}
+                                Debugging USB
+                            {% else %}
+                                {{ key|replace('_', ' ')|title }}
+                            {% endif %}
+                            :</strong>
+                        </div>
+                        <div class="status-value">
+                            {% if value == "Enabled" or value == "Disabled" %}
+                                <span class="status-indicator {% if key in ['screen_lock', 'biometric', 'verify_apps'] and value == 'Enabled' %}status-good{% elif key in ['unknown_sources', 'developer_options', 'usb_debugging'] and value == 'Disabled' %}status-good{% else %}status-warning{% endif %}">
+                                    {% if value == "Enabled" %}
+                                        Aktif
+                                    {% else %}
+                                        Nonaktif
+                                    {% endif %}
+                                </span>
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Network Security Card -->
+        <div class="card">
+            <div class="card-title">Keamanan Jaringan</div>
+            <ul class="status-list">
+                {% for key, value in status.network_security.items() %}
+                    <li class="status-item">
+                        <div class="status-label">
+                            <strong>
+                            {% if key == 'wifi_security' %}
+                                Keamanan Wi-Fi
+                            {% elif key == 'vpn_active' %}
+                                VPN Aktif
+                            {% elif key == 'firewall_status' %}
+                                Status Firewall
+                            {% elif key == 'network_encryption' %}
+                                Enkripsi Jaringan
+                            {% elif key == 'dns_settings' %}
+                                Pengaturan DNS
+                            {% else %}
+                                {{ key|replace('_', ' ')|title }}
+                            {% endif %}
+                            :</strong>
+                        </div>
+                        <div class="status-value">
+                            {{ value }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Recommendations Card -->
+        <div class="card">
+            <div class="card-title">Rekomendasi Keamanan</div>
+            
+            {% if status.recommendations %}
+                <ul class="recommendations-list">
+                    {% for rec in status.recommendations %}
+                        <li class="recommendation-item">
+                            <div class="recommendation-header">
+                                <span class="priority-badge priority-{{ rec.priority }}">
+                                    {% if rec.priority == 'high' %}
+                                        Tinggi
+                                    {% elif rec.priority == 'medium' %}
+                                        Sedang
+                                    {% else %}
+                                        Rendah
+                                    {% endif %}
+                                </span>
+                                <h3>{{ rec.title }}</h3>
+                                <button class="expand-btn">Detail</button>
+                            </div>
+                            <div class="recommendation-details">
+                                <p>{{ rec.description }}</p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Tidak ada rekomendasi saat ini. Perangkat Anda tampaknya aman.</p>
+            {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <button id="startScanBtn" class="btn btn-full">
+            <i class="fas fa-shield-alt"></i> Mulai Pemindaian Keamanan Baru
+        </button>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="/scan_results" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Pindai</span>
+        </a>
+        <a href="/device_status" class="nav-item active">
+            <i class="fas fa-mobile-alt nav-icon"></i>
+            <span>Status</span>
+        </a>
+        <a href="/repair" class="nav-item">
+            <i class="fas fa-tools nav-icon"></i>
+            <span>Perbaikan</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Additional page-specific script
+        document.getElementById('startScanBtn').addEventListener('click', function() {
+            window.location.href = '/';
+        });
+        
+        // Set up expanding recommendation details
+        document.querySelectorAll('.expand-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const details = this.closest('.recommendation-item').querySelector('.recommendation-details');
+                details.classList.toggle('expanded');
+                this.textContent = details.classList.contains('expanded') ? 'Tutup' : 'Detail';
+            });
+        });
+    </script>
+</body>
+</html>

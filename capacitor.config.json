@@ -1,0 +1,9 @@
+{
+  "appId": "id.pranaja.antivirus",
+  "appName": "Pranaja Anti-Virus",
+  "webDir": "dist",
+  "server": {
+    "url": "http://localhost:5000",
+    "cleartext": true
+  }
+}

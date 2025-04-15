@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Education - Android Security Scanner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Security Education</h1>
+    </header>
+
+    <main class="container">
+        <!-- Introduction -->
+        <div class="card">
+            <div class="card-title">Mobile Security Knowledge</div>
+            <p>Learn about mobile security threats and best practices to keep your device and information safe. Select a topic below to read more.</p>
+        </div>
+        
+        <!-- Topics List -->
+        <div id="topicsList">
+            <ul class="topic-list">
+                {% for topic in topics %}
+                <li class="topic-item" data-topic-id="{{ topic.id }}">
+                    <div class="topic-icon">
+                        <i class="fas fa-{{ topic.icon }}"></i>
+                    </div>
+                    <div class="topic-content">
+                        <h3>{{ topic.title }}</h3>
+                        <p>{{ topic.summary }}</p>
+                    </div>
+                    <div class="topic-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <!-- Topic Content (populated by JavaScript) -->
+        <div id="educationContent"></div>
+        
+        <!-- Quick Tips -->
+        <div class="card">
+            <div class="card-title">Quick Security Tips</div>
+            <ul>
+                <li><strong>Keep your device updated:</strong> Always install the latest OS and app updates.</li>
+                <li><strong>Use official app stores:</strong> Download apps only from Google Play.</li>
+                <li><strong>Check app permissions:</strong> Review what each app can access on your device.</li>
+                <li><strong>Use a screen lock:</strong> Secure your device with a PIN, password, or biometric lock.</li>
+                <li><strong>Be careful on public Wi-Fi:</strong> Avoid accessing sensitive information on public networks.</li>
+                <li><strong>Enable remote wipe:</strong> Set up "Find My Device" to remotely erase your data if your phone is lost.</li>
+            </ul>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="/scan_results" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Pindai</span>
+        </a>
+        <a href="/device_status" class="nav-item">
+            <i class="fas fa-mobile-alt nav-icon"></i>
+            <span>Status</span>
+        </a>
+        <a href="/repair" class="nav-item">
+            <i class="fas fa-tools nav-icon"></i>
+            <span>Perbaikan</span>
+        </a>
+        <a href="/education" class="nav-item active">
+            <i class="fas fa-book nav-icon"></i>
+            <span>Edukasi</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

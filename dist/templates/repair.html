@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perbaikan Perangkat - Pranaja Anti-Virus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Perbaikan Perangkat</h1>
+        <div class="theme-toggle">
+            <button id="darkModeBtn" class="theme-btn">
+                <i class="fas fa-moon"></i> Mode Gelap
+            </button>
+            <button id="cyberpunkBtn" class="theme-btn">
+                <i class="fas fa-bolt"></i> Mode Cyberpunk
+            </button>
+            <button id="safeModeBtn" class="theme-btn">
+                <i class="fas fa-shield-alt"></i> Mode Aman
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Repair Options Card -->
+        <div class="card">
+            <div class="card-title">Opsi Perbaikan Perangkat</div>
+            <p>Pilih opsi perbaikan yang sesuai dengan masalah pada perangkat Anda:</p>
+            
+            <div class="repair-options">
+                <div class="repair-option" id="clean-malware">
+                    <div class="repair-icon">
+                        <i class="fas fa-shield-virus"></i>
+                    </div>
+                    <div class="repair-details">
+                        <h3>Pembersihan Malware Mendalam</h3>
+                        <p>Hapus semua malware, virus, dan aplikasi berbahaya yang terdeteksi pada perangkat.</p>
+                        <button class="btn btn-warning repair-btn" data-repair="malware">
+                            <i class="fas fa-broom"></i> Bersihkan Sekarang
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="repair-option" id="optimize-system">
+                    <div class="repair-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="repair-details">
+                        <h3>Optimalisasi Sistem</h3>
+                        <p>Perbaiki pengaturan sistem yang tidak aman dan optimalkan kinerja perangkat.</p>
+                        <button class="btn btn-secondary repair-btn" data-repair="system">
+                            <i class="fas fa-rocket"></i> Optimalisasi
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="repair-option" id="privacy-repair">
+                    <div class="repair-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="repair-details">
+                        <h3>Perbaikan Privasi</h3>
+                        <p>Sesuaikan izin aplikasi dan perbaiki kebocoran data pribadi.</p>
+                        <button class="btn repair-btn" data-repair="privacy">
+                            <i class="fas fa-user-lock"></i> Perbaiki Privasi
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="repair-option" id="full-repair">
+                    <div class="repair-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="repair-details">
+                        <h3>Perbaikan Menyeluruh</h3>
+                        <p>Lakukan semua perbaikan diatas sekaligus untuk memaksimalkan keamanan perangkat.</p>
+                        <button class="btn btn-danger repair-btn" data-repair="full">
+                            <i class="fas fa-hammer"></i> Perbaikan Penuh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Repair Progress -->
+        <div class="card" id="repair-progress-container" style="display: none;">
+            <div class="card-title">Proses Perbaikan</div>
+            <div class="repair-progress">
+                <div class="spinner-container">
+                    <div class="spinner"></div>
+                    <div class="spinner-text" id="repair-status-text">Memulai perbaikan...</div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="repair-progress-bar"></div>
+                </div>
+            </div>
+            <div class="repair-log" id="repair-log"></div>
+        </div>
+        
+        <!-- Repair History -->
+        <div class="card">
+            <div class="card-title">Riwayat Perbaikan</div>
+            <div id="repair-history">
+                <p>Belum ada riwayat perbaikan.</p>
+            </div>
+        </div>
+        
+        <!-- Reset Device Section -->
+        <div class="card">
+            <div class="card-title">Reset Perangkat</div>
+            <p>Untuk kasus infeksi yang sangat parah, Anda mungkin perlu melakukan reset pabrik pada perangkat Anda. Ini akan menghapus semua data dan mengembalikan perangkat ke kondisi awal.</p>
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>Peringatan:</strong> Reset pabrik akan menghapus semua data, aplikasi, dan pengaturan pada perangkat Anda. Pastikan Anda telah mencadangkan data penting sebelum melanjutkan.</p>
+            </div>
+            <button class="btn btn-danger" id="resetDeviceBtn">
+                <i class="fas fa-redo-alt"></i> Reset Perangkat
+            </button>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="/scan_results" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Pindai</span>
+        </a>
+        <a href="/device_status" class="nav-item">
+            <i class="fas fa-mobile-alt nav-icon"></i>
+            <span>Status</span>
+        </a>
+        <a href="/repair" class="nav-item active">
+            <i class="fas fa-tools nav-icon"></i>
+            <span>Perbaikan</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/repair.js"></script>
+</body>
+</html>

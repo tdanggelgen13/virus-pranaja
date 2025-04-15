@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Pemindaian - Pranaja Anti-Virus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Hasil Pemindaian</h1>
+        <div class="theme-toggle">
+            <button id="darkModeBtn" class="theme-btn">
+                <i class="fas fa-moon"></i> Mode Gelap
+            </button>
+            <button id="cyberpunkBtn" class="theme-btn">
+                <i class="fas fa-bolt"></i> Mode Cyberpunk
+            </button>
+            <button id="safeModeBtn" class="theme-btn">
+                <i class="fas fa-shield-alt"></i> Mode Aman
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="resultsContainer">
+            <div class="card">
+                <div class="card-title">Ringkasan Pemindaian</div>
+                <p>
+                    <strong>Pemindaian selesai:</strong> {{ results.timestamp }}<br>
+                    <strong>Aplikasi dipindai:</strong> {{ results.scan_details.apps_scanned }}<br>
+                    <strong>File dipindai:</strong> {{ results.scan_details.files_scanned }}<br>
+                    <strong>Pengaturan diperiksa:</strong> {{ results.scan_details.settings_checked }}
+                </p>
+                
+                {% if results.threats_found %}
+                    <div class="status-indicator">
+                        <div class="status-circle status-warning"></div>
+                        <span class="status-text">{{ results.threats_found|length }} masalah potensial ditemukan</span>
+                    </div>
+                {% else %}
+                    <div class="status-indicator">
+                        <div class="status-circle status-good"></div>
+                        <span class="status-text">Tidak ada ancaman terdeteksi</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if results.threats_found %}
+                <div class="card">
+                    <div class="card-title">Masalah Terdeteksi</div>
+                    <ul class="results-list">
+                        {% for threat in results.threats_found %}
+                            <li class="result-item" id="threat-{{ threat.id }}">
+                                <div class="result-icon">
+                                    {% if threat.risk_level == 'high' %}
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    {% elif threat.risk_level == 'medium' %}
+                                        <i class="fas fa-exclamation-circle"></i>
+                                    {% else %}
+                                        <i class="fas fa-info-circle"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="result-content">
+                                    <h3 class="risk-{{ threat.risk_level }}">{{ threat.name }}</h3>
+                                    <div class="result-details">{{ threat.description }}</div>
+                                    <p><strong>Tingkat Risiko:</strong> 
+                                        <span class="risk-{{ threat.risk_level }}">
+                                            {% if threat.risk_level == 'high' %}
+                                                Tinggi
+                                            {% elif threat.risk_level == 'medium' %}
+                                                Sedang
+                                            {% else %}
+                                                Rendah
+                                            {% endif %}
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="result-action">
+                                    <button class="btn {% if threat.risk_level == 'high' %}btn-danger{% else %}btn-warning{% endif %} cleanup-btn" data-threat-id="{{ threat.id }}">
+                                        {% if threat.cleanup_action == 'uninstall_app' %}
+                                            <i class="fas fa-trash-alt"></i> Hapus Aplikasi
+                                        {% elif threat.cleanup_action == 'disable_setting' %}
+                                            <i class="fas fa-toggle-off"></i> Nonaktifkan
+                                        {% elif threat.cleanup_action == 'disconnect_network' %}
+                                            <i class="fas fa-wifi-slash"></i> Putuskan Koneksi
+                                        {% elif threat.cleanup_action == 'review_permissions' %}
+                                            <i class="fas fa-eye"></i> Tinjau Izin
+                                        {% else %}
+                                            <i class="fas fa-wrench"></i> Perbaiki
+                                        {% endif %}
+                                    </button>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-title">Perangkat Anda Aman</div>
+                    <div class="text-center">
+                        <i class="fas fa-shield-check" style="font-size: 4rem; color: var(--secondary-color); margin: 1.5rem 0; filter: drop-shadow(0 5px 15px rgba(52, 168, 83, 0.3));"></i>
+                    </div>
+                    <p>Tidak ada ancaman keamanan yang terdeteksi selama pemindaian. Perangkat Anda tampak aman.</p>
+                    <p>Lanjutkan praktik kebiasaan keamanan yang baik:</p>
+                    <ul>
+                        <li>Jaga perangkat Anda tetap diperbarui</li>
+                        <li>Unduh aplikasi hanya dari sumber terpercaya</li>
+                        <li>Tinjau izin aplikasi secara teratur</li>
+                        <li>Gunakan kata sandi yang kuat dan otentikasi biometrik</li>
+                    </ul>
+                </div>
+            {% endif %}
+
+            <div class="card">
+                <div class="card-title">Status Sistem</div>
+                <ul class="status-list">
+                    {% for key, value in results.system_status.items() %}
+                        <li class="status-item">
+                            <div class="status-label">
+                                <strong>
+                                {% if key == 'os_version' %}
+                                    Versi OS
+                                {% elif key == 'security_patch' %}
+                                    Patch Keamanan
+                                {% elif key == 'encryption_status' %}
+                                    Status Enkripsi
+                                {% elif key == 'screen_lock' %}
+                                    Kunci Layar
+                                {% elif key == 'usb_debugging' %}
+                                    Debugging USB
+                                {% elif key == 'unknown_sources' %}
+                                    Sumber Tidak Dikenal
+                                {% elif key == 'developer_options' %}
+                                    Opsi Pengembang
+                                {% else %}
+                                    {{ key|replace('_', ' ')|title }}
+                                {% endif %}
+                                :</strong> 
+                            </div>
+                            <div class="status-value">
+                                {{ value }}
+                                {% if key == 'security_patch' and value < '2023-01-01' %}
+                                    <span class="risk-medium">
+                                        <i class="fas fa-exclamation-circle"></i> Pembaruan direkomendasikan
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <button id="newScanBtn" class="btn btn-full">
+                <i class="fas fa-shield-alt"></i> Mulai Pemindaian Baru
+            </button>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="/scan_results" class="nav-item active">
+            <i class="fas fa-search nav-icon"></i>
+            <span>Pindai</span>
+        </a>
+        <a href="/device_status" class="nav-item">
+            <i class="fas fa-mobile-alt nav-icon"></i>
+            <span>Status</span>
+        </a>
+        <a href="/repair" class="nav-item">
+            <i class="fas fa-tools nav-icon"></i>
+            <span>Perbaikan</span>
+        </a>
+    </nav>
+
+    <script src="/static/js/main.js"></script>
+    <script>
+        // New scan button functionality
+        document.getElementById('newScanBtn').addEventListener('click', function() {
+            window.location.href = '/';
+        });
+    </script>
+</body>
+</html>
